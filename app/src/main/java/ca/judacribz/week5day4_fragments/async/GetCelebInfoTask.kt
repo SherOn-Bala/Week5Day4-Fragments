@@ -8,7 +8,7 @@ import org.jsoup.Jsoup
 
 import java.io.IOException
 
-class GetCelebInfoTask(private val celebInfoListener: CelebInfoListener) :
+class GetCelebInfoTask(val celebInfoListener: CelebInfoListener) :
     AsyncTask<String, Void, Celebrity>() {
 
     interface CelebInfoListener {
@@ -29,11 +29,13 @@ class GetCelebInfoTask(private val celebInfoListener: CelebInfoListener) :
             ).get()
 
             if (document.getElementsByClass("findNoResults").size == 0) {
+                val urlPart = document
+                    .getElementsByClass("primary_photo").get(0)
+                    .getElementsByTag("a").get(0)
+                    .attr("href")
                 val url = String.format(
                     URL_IMDB,
-                    document
-                        .getElementsByClass("primary_photo").get(0)
-                        .getElementsByTag("a").get(0).attr("href")
+                    urlPart
                 )
                 document = Jsoup.connect(url).get()
                 var element = document.getElementById("name-poster")
@@ -41,12 +43,13 @@ class GetCelebInfoTask(private val celebInfoListener: CelebInfoListener) :
                     info[0] = element.attr("src")
                 }
                 element = document.getElementsByClass("name-trivia-bio-text").get(0)
-                    .getElementsByTag("div").get(0)
-                info[1] = element.text()
-                Log.d("YOOO", element.text())
+                    .getElementsByTag("span").get(0).getElementsByTag("a").get(0)
+                info[1] = urlPart.substring(0, urlPart.indexOf("?"))
+                Log.d("YOOO", info[1])
 
                 celebrity.pictureUrl = info[0]
                 celebrity.description = info[1]
+                celebrity.detailsUrl = String.format(URL_IMDB, element.attr("href"))
 
             }
         } catch (e: IOException) {
