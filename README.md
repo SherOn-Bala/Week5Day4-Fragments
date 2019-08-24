@@ -1,5 +1,10 @@
 ## Fragments / Kotlin ##
 
+### Screenshots ###
+<p float="left">
+  <img src="/screenshots/1.png" width="200" />
+</p>
+
 ### Code ###
 1. Create a multi pane app (add two fragment to the activity in a sequence)
 2. Fragment one should have a list of celebrity names.
