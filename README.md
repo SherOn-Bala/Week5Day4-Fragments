@@ -42,4 +42,4 @@
 * An explicit call to throw NullPointerException()
 * Usage of the !! operator that throws an exception if a null value is set to a variable.
 * When dealing with Java interoperation, the ? operator shoud be used for initializing variables that can be null.
-* Elvis operator (:?). Check if a variable is not null and use it, otherwise use some other non-null value to the right of the question mark.
+* Elvis operator (?:) checks if a variable is not null and use it, otherwise use some other non-null value to the right of the colon.
