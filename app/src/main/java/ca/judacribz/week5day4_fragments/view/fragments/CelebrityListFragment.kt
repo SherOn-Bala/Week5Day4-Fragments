@@ -15,20 +15,24 @@ import kotlinx.android.synthetic.main.fragment_celebrity_list.view.*
 
 class CelebrityListFragment : Fragment() {
 
+    private var adapter: CelebrityAdapter? = null
+
+    // Interface to pass Celebrity data back to MainActivity
     private var listener: CelebrityClickedListener? = null
 
     interface CelebrityClickedListener {
         fun onCelebrityClicked(celebrity: Celebrity)
     }
 
-    var adapter: CelebrityAdapter? = null
-
+    //=Fragment Override===========================================================================
+    // Interface Listener context set to MainActivity context
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is CelebrityClickedListener) {
             listener = context
         }
 
+        // Setting the click listener of celebrity
         adapter = CelebrityAdapter { celebrity: Celebrity -> onCelebrityClicked(celebrity) }
     }
 
@@ -45,11 +49,16 @@ class CelebrityListFragment : Fragment() {
         view.rvList.layoutManager = LinearLayoutManager(activity)
         view.rvList.adapter = adapter
     }
+    //=END=Fragment Override=======================================================================
 
+
+    //  Helper function to add Celebrity data to the adapter
     fun addCelebrity(celebrity: Celebrity) {
         adapter?.addCelebrity(celebrity)
     }
 
+    // Calls the interface method connected to MainActivity to send data back when an item is
+    // clicked on the Celebrity adapter list.
     private fun onCelebrityClicked(celebrity: Celebrity) {
         listener?.onCelebrityClicked(celebrity)
     }

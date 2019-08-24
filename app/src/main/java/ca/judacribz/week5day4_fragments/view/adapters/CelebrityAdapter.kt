@@ -9,13 +9,14 @@ import ca.judacribz.week5day4_fragments.model.Celebrity
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_celebrity.view.*
 
-class CelebrityAdapter(val clickListener: (Celebrity) -> Unit) :
-    RecyclerView.Adapter<CelebrityAdapter.ViewHolder>() {
+class CelebrityAdapter(private val clickListener: (Celebrity) -> Unit) :
+    RecyclerView.Adapter<CelebrityAdapter.CelebViewHolder>() {
 
-    public val celebrityList: ArrayList<Celebrity> = ArrayList()
+    private val celebrityList: ArrayList<Celebrity> = ArrayList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
+    //=RecyclerView.Adapter Override===============================================================
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CelebViewHolder =
+        CelebViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_celebrity,
                 parent,
@@ -25,23 +26,29 @@ class CelebrityAdapter(val clickListener: (Celebrity) -> Unit) :
 
     override fun getItemCount(): Int = celebrityList.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: CelebViewHolder, position: Int) =
         holder.bindValues(celebrityList[position], clickListener)
+    //=END=RecyclerView.Adapter Override===========================================================
 
+
+    // Function to add Celebrity data to the adapter list
     fun addCelebrity(celebrity: Celebrity) {
         celebrityList.add(celebrity)
         notifyItemInserted(itemCount)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    // Custom Celebrity ViewHolder
+    class CelebViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindValues(celebrity: Celebrity, clickListener: (Celebrity) -> Unit) {
             Glide.with(itemView.context).load(celebrity.pictureUrl).into(itemView.ivProfilePic)
+
             itemView.tvFirstName.text = celebrity.firstName
             itemView.tvLastName.text = celebrity.lastName
-            itemView.setOnClickListener{clickListener(celebrity)}
-        }
 
+            // Using lambda function to set clickListener interface
+            itemView.setOnClickListener { clickListener(celebrity) }
+        }
     }
 }

@@ -8,7 +8,7 @@ import org.jsoup.Jsoup
 
 import java.io.IOException
 
-class GetCelebInfoTask(val celebInfoListener: CelebInfoListener) :
+class GetCelebInfoTask(private val celebInfoListener: CelebInfoListener) :
     AsyncTask<String, Void, Celebrity>() {
 
     interface CelebInfoListener {
@@ -45,12 +45,10 @@ class GetCelebInfoTask(val celebInfoListener: CelebInfoListener) :
                 element = document.getElementsByClass("name-trivia-bio-text").get(0)
                     .getElementsByTag("span").get(0).getElementsByTag("a").get(0)
                 info[1] = urlPart.substring(0, urlPart.indexOf("?"))
-                Log.d("YOOO", info[1])
 
                 celebrity.pictureUrl = info[0]
                 celebrity.description = info[1]
                 celebrity.detailsUrl = String.format(URL_IMDB, element.attr("href"))
-
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -64,7 +62,7 @@ class GetCelebInfoTask(val celebInfoListener: CelebInfoListener) :
     }
 
     companion object {
-        private val URL_IMDB = "https://www.imdb.com%s"
+        private const val URL_IMDB = "https://www.imdb.com%s"
         private val URL_IMDB_SEARCH = String.format(
             URL_IMDB,
             "/find?ref_=nv_sr_fn&q=%s+%s"

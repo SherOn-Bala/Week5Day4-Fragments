@@ -1,6 +1,7 @@
 package ca.judacribz.week5day4_fragments.view.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import ca.judacribz.week5day4_fragments.R
@@ -12,13 +13,14 @@ import ca.judacribz.week5day4_fragments.view.fragments.CelebrityListFragment
 
 class MainActivity : AppCompatActivity(),
     GetCelebInfoTask.CelebInfoListener,
-    GetCelebDetailsTask.CelebDetailsListener,
-    CelebrityListFragment.CelebrityClickedListener {
+    CelebrityListFragment.CelebrityClickedListener,
+    GetCelebDetailsTask.CelebDetailsListener {
 
-    var detailSet = false;
+    private val list: CelebrityListFragment = CelebrityListFragment()
+    private val detail: CelebrityDetailFragment = CelebrityDetailFragment()
+
+    var detailSet = false
     lateinit var manager: FragmentManager
-    val list: CelebrityListFragment = CelebrityListFragment()
-    val detail: CelebrityDetailFragment = CelebrityDetailFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity(),
         GetCelebInfoTask(this).execute(firstName, lastName)
     }
 
+    //=GetCelebInfoTask.CelebInfoListener Override=================================================
+    // When Celebrity basic data is downloaded for celebrity list, list fragment is populated
     override fun onInfoDownloaded(celebrity: Celebrity) {
         list.addCelebrity(celebrity)
 
@@ -56,10 +60,15 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    //=CelebrityListFragment.CelebrityClickedListener Override=====================================
+    // When a celebrity from the list is clicked on, extra details are downloaded
     override fun onCelebrityClicked(celebrity: Celebrity) {
+        Log.d("YOO", "IM CLICKED")
         GetCelebDetailsTask(this).execute(celebrity)
     }
 
+    //=GetCelebDetailsTask.CelebDetailsListener Override===========================================
+    // When extra details are downloaded, details fragment is populated
     override fun onDetailsDownloaded(celebrity: Celebrity) {
         detail.updateUI(celebrity)
     }

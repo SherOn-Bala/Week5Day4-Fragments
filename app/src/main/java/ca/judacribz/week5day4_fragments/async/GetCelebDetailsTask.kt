@@ -8,11 +8,8 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GetCelebDetailsTask(val celebDetailsListener: CelebDetailsListener) :
+class GetCelebDetailsTask(private val celebDetailsListener: CelebDetailsListener) :
     AsyncTask<Celebrity, Void, Celebrity>() {
-
-    val inDateFormat = SimpleDateFormat("yyyy-M-d", Locale.US)
-    val outDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
 
     interface CelebDetailsListener {
         fun onDetailsDownloaded(celebrity: Celebrity)
@@ -25,13 +22,13 @@ class GetCelebDetailsTask(val celebDetailsListener: CelebDetailsListener) :
             val trTags = document.getElementById("overviewTable").getElementsByTag("tr")
 
             // Birthday
-            val date: Date? = inDateFormat.parse(
+            val date: Date? = Companion.inDateFormat.parse(
                 trTags[0]
                     .getElementsByTag("time")
                     .attr("datetime")
             )
             if (date != null) {
-                celebrity.birthday = outDateFormat.format(date)
+                celebrity.birthday = Companion.outDateFormat.format(date)
             }
 
             // Birth Location
@@ -57,5 +54,10 @@ class GetCelebDetailsTask(val celebDetailsListener: CelebDetailsListener) :
 
     override fun onPostExecute(celebrity: Celebrity) {
         celebDetailsListener.onDetailsDownloaded(celebrity)
+    }
+
+    companion object {
+        private val inDateFormat = SimpleDateFormat("yyyy-M-d", Locale.US)
+        private val outDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
     }
 }
